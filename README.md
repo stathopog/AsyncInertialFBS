@@ -17,5 +17,7 @@ The main file is the  jupyter notebook. Imports the following files:
 * **agentBESS.jl:**            PGM module
 * **async_inert_pgm.jl.jl:**   asynchronous (and inertial) PGM module
 
+All optimization problems are solved using JuMP with the Gurobi solver.
+
 ## References
 1. G. Stathopoulos and C. N. Jones, "An Inertial Parallel and Asynchronous Forward-Backward Iteration for Distributed Convex Optimization", arXiv:1706.00088
