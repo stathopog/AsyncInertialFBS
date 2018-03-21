@@ -67,8 +67,6 @@ function setupAsInPGM(AgentCB::Array{Any,1}, N::Int64, T::Int64)
     async_pgm_P_CB_local_prev = zeros(N*T,N+1)
     async_pgm_P_BESS_local_prev = zeros(T,N+1)
 
-    # pgm = PGM(pgm_u, pgm_y, pgm_x, pgm_v, pgm_P_CB, pgm_P_CB_prev, pgm_P_BESS, pgm_P_BESS_prev)
-
     return async_pgm_u, async_pgm_y, async_pgm_x, async_pgm_v, async_pgm_P_CB, async_pgm_P_CB_prev, async_pgm_P_BESS, async_pgm_P_BESS_prev, async_pgm_RES, async_pgm_P_CB_local, async_pgm_P_BESS_local, async_pgm_P_CB_local_prev, async_pgm_P_BESS_local_prev
 end
 
@@ -97,9 +95,6 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
         minIdx = indmin(collect(values(UpdateQueue)))
         TimeNextUpdate = collect(values(UpdateQueue))[minIdx]
         ik = collect(keys(UpdateQueue))[minIdx]
-            # display("Update queue: $(collect(values(UpdateQueue)))")
-            # display("Time of the next update: $(TimeNextUpdate)")
-            # display("Next index to update: $(ik)")
         NoUpdates[ik] += 1
 
         if ik == N+1
@@ -110,9 +105,7 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
             # BESS proximal step
             as_in_pgm.P_BESS_prev = as_in_pgm.P_BESS
             point = computeProxPointBESS(agentBESS, δ, β, as_in_pgm.P_BESS_local[:,N+1], as_in_pgm.P_BESS_local_prev[:,N+1], res)
-            # tempBESS = getvalue(solveProxBESS(agentBESS, T, point, SOC0, δ))
             tempBESS = getvalue(solveProxBESS(optimizationModelBESS, point, sparse(agentBESS.data.Γ)))
-            # tempBESS = evaluate(solveProxBESS_Convex(agentBESS, T, point, P0_half, q0, SOC0, δ))
             as_in_pgm.P_BESS += η * (tempBESS - as_in_pgm.P_BESS)
 
             if !coordinate
@@ -136,12 +129,8 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
             # building proximal step
             as_in_pgm.P_CB_prev[:,ik] = as_in_pgm.P_CB[:,ik]
             point = computeProxPointCB(agentCB[ik], δ, β, as_in_pgm.P_CB_local[(ik-1)*T+1:ik*T,ik], as_in_pgm.P_CB_local_prev[(ik-1)*T+1:ik*T,ik], res)
-            # as_in_pgm.u[ik], as_in_pgm.y[ik], as_in_pgm.x[ik], as_in_pgm.v[ik] = solveProxCB(agentCB[ik], Tref, T, X0[ik], W[ik], point, night_times, day_times, δ)
             as_in_pgm.u[ik], as_in_pgm.y[ik], as_in_pgm.x[ik], as_in_pgm.v[ik] = solveProxCB(optimizationModelCB[ik], point, sparse(agentCB[ik].data.Γ))
             tempCB[:,ik] = getvalue(as_in_pgm.v[ik])
-
-            # as_in_pgm.u[ik], as_in_pgm.y[ik], as_in_pgm.x[ik], as_in_pgm.v[ik] = solveProxCB_Convex(agentCB[ik], Tref, T, X0[ik], W[ik], point, night_times, day_times, δ)
-            # tempCB[:,ik] = evaluate(as_in_pgm.v[ik])
 
             as_in_pgm.P_CB[:,ik] += η * (tempCB[:,ik] - as_in_pgm.P_CB[:,ik])
 
