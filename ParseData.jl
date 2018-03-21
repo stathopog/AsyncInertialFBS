@@ -12,7 +12,7 @@ parsePreconditioners:  reads in the preconditioning matrices (stepsizes)
 @date : 2017-06-19
 =#
 
-module ParseData
+module parseData
 
 # include("building.jl")
 # include("master.jl")
