@@ -15,7 +15,7 @@ The main file is the  jupyter notebook. Imports the following files:
 * **parseData.jl:**            the original building models have been generated in MATLAB using the OpenBuild package; module imports them from the *data* folder
 * **agentCB.jl:**              aggregator of buidlings that setups the local proximal minimization problems
 * **agentBESS.jl:**            PGM module
-* **async_inert_pgm.jl.jl:**   asynchronous (and inertial) PGM module
+* **async_inert_pgm.jl:**   asynchronous (and inertial) PGM module
 
 All optimization problems are solved using JuMP with the Gurobi solver.
 
