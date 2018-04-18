@@ -88,10 +88,10 @@ end
 
 function setupAggregator(No::Int64, building::Building, Γ::Array{Float64, 2}, α::Float64)
 
-    A    = Array(Float64,0,0)
-    Bu   = Array(Float64,0,0)
-    Bw   = Array(Float64,0,0)
-    C    = Array(Float64,0,0)
+    A    = Array{Float64}(0,0)
+    Bu   = Array{Float64}(0,0)
+    Bw   = Array{Float64}(0,0)
+    C    = Array{Float64}(0,0)
 
     # consumptions
     Uss                 = kron(ones(No), building.Uss)
@@ -162,7 +162,7 @@ function setupProxCB(agent::Aggregator, Tref::Float64, T::Int64,
         @constraint(agentModel, Y[j,1] == vecdot(agent.system.C[j,:], X[:,1]) )
     end
 
-    obj = 0
+    obj = 0.0
     for t = 1:T-1
         for i = 1:agent.system.Nx
             @constraint(agentModel, (X[i,t+1] == vecdot(agent.system.A[i,:], X[:,t]) + vecdot(agent.system.Bu[i,:], U[:,t+1]) +
@@ -213,6 +213,7 @@ end
 function solveProxCB(optimizationModel::ProxCB,
                      point::Array{Float64,2},
                      H::SparseMatrixCSC{Float64,Int64})
+
     obj_prox = 0.5*vecdot(optimizationModel.p_CB-point, H*(optimizationModel.p_CB-point))
     @objective( optimizationModel.agentModel, Min, optimizationModel.obj + obj_prox )
 

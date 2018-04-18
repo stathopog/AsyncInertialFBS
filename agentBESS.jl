@@ -100,6 +100,7 @@ end
 function solveProxBESS(optimizationModel::ProxBESS,
                        point::Array{Float64,1},
                        H::SparseMatrixCSC{Float64,Int64})
+
     obj_prox = 0.5*vecdot(optimizationModel.p_BESS-point, H*(optimizationModel.p_BESS-point))
     @objective( optimizationModel.batteryModel, Min, optimizationModel.obj + obj_prox )
 

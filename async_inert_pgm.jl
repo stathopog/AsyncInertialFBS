@@ -85,6 +85,7 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
     LastUpdateIndex = ones(Int64,N+1)
     k = 1
     T2 = [0.0]
+    UpdateSequence = [0]
 
     count = 1
 
@@ -159,6 +160,7 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
 
         # save time values
         push!(T2, TimeNextUpdate)
+        push!(UpdateSequence, minIdx)
         if mod(k, 100) == 0
             display("Update queue: $(collect(values(UpdateQueue)))")
             display("Time of the next update: $(TimeNextUpdate)")
@@ -178,7 +180,7 @@ function AlgoAsInPGM(coordinate::Bool, varying_β::Bool, as_in_pgm::AsInPGM, N::
 
     end
 
-    return as_in_pgm, T2, NoUpdates
+    return as_in_pgm, T2, UpdateSequence, NoUpdates
 
 end
 
